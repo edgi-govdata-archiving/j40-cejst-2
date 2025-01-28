@@ -1497,7 +1497,7 @@ export const NOTE_ON_TRIBAL_NATIONS = {
   PARA_2: <FormattedMessage
     id={'explore.map.page.under.map.note.on.tribal.nations.para.2'}
     defaultMessage={`
-      This decision was made after meaningful and robust consultation with Tribal Nations. This is consistent with CEQ’s <link1>Action Plan</link1> for Consultation and Coordination with Tribal Nations, the <link3>Memorandum</link3> on Tribal Consultation and Strengthening Nation-to-Nation Consultation, and <link2>Executive Order 13175</link2> on Consultation and Coordination With Indian Tribal Governments.
+      
     `}
     description={`Navigate to the explore the map page. Under the map, you will see tribal nations paragraph 2`}
     values={{
