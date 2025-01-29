@@ -803,7 +803,9 @@ export const COMMUNITY = {
     defaultMessage={ 'Identified as disadvantaged?'}
     description={`Navigate to the explore the map page. When the map is in view, click on the map. The side panel will show asking IF the communities is focused on`}
   />,
-  SEND_FEEDBACK: {
+
+  // removing the send feedback button when a census tract is selected
+  /*   SEND_FEEDBACK: {
     TITLE: <FormattedMessage
       id={'explore.map.page.side.panel.send.feedback.title'}
       defaultMessage={ 'Send feedback'}
@@ -816,7 +818,8 @@ export const COMMUNITY = {
         description: `Navigate to the explore the map page. When the map is in view, click on the map. The side panel will show a send feedback icon, this is the images alt tag`,
       },
     }),
-  },
+  }, */
+
 };
 
 export const numberOfCategoriesExceeded = (categoryCount:number) => <FormattedMessage
@@ -838,7 +841,7 @@ export const numberOfCategoriesExceeded = (categoryCount:number) => <FormattedMe
 //   }}
 // />;
 
-export const SEND_FEEDBACK = defineMessages({
+/* export const SEND_FEEDBACK = defineMessages({
   EMAIL_BODY: {
     id: 'explore.map.page.side.panel.send.feedback.email.body',
     defaultMessage: `Please provide feedback about this census tract, including about the datasets, the data categories provided for this census tract, the communities who live in this census tract, and anything else relevant that CEQ should know about this census tract.
@@ -846,7 +849,7 @@ export const SEND_FEEDBACK = defineMessages({
     description: `Navigate to the explore the map page. When the map is in view, click on the map. The side panel will show link to send feedback
 `,
   },
-});
+}); */
 
 export const SIDE_PANEL_CATEGORY = defineMessages({
   INDICATOR: {
