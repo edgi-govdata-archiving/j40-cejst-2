@@ -123,6 +123,9 @@ jobs:
         id: extract
         if: github.event_name == 'pull_request'
         run: |
+          git config user.email "commit-bot@i-am-a-bot.com"
+          git config user.name "Translation Update Bot"
+
           ENGLISH_FILE='src/intl/en.json'
           npm run intl:extract
           if (git diff --exit-code "${ENGLISH_FILE}" > /dev/null); then
