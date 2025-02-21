@@ -107,10 +107,8 @@ jobs:
       run:
         working-directory: client
     permissions:
-      # To commit `en.json` changes back to the current PR.
-      contents: write
-      # To comment on the PR that changes were made.
-      pull-requests: write
+      contents: write       # For commiting changes back to the current PR.
+      pull-requests: write  # For commenting on the PR.
     steps:
       - uses: actions/checkout@v4
 
@@ -136,7 +134,7 @@ jobs:
       - uses: thollander/actions-comment-pull-request@v3
         if: steps.commit-strings.outputs.changes_detected == 'true'
         with:
-          message: |
+          message: >
             :wave: FYI, your PR has been automatically updated with changes to
             `client/src/intl/en.json`, which contains all the translatable text
             from the application (probably because you made changes to
