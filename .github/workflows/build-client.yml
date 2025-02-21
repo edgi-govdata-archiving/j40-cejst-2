@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/deploy_frontend_main.yml"
+      - ".github/workflows/build-client.yml"
       - "client/**/*"
   pull_request:
     paths:
-      - ".github/workflows/deploy_frontend_main.yml"
+      - ".github/workflows/build-client.yml"
       - "client/**/*"
 
 concurrency:
