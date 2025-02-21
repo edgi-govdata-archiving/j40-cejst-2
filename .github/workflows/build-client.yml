@@ -107,7 +107,10 @@ jobs:
       run:
         working-directory: client
     permissions:
+      # To commit `en.json` changes back to the current PR.
       contents: write
+      # To comment on the PR that changes were made.
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
 
