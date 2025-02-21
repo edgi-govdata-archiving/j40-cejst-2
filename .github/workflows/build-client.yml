@@ -128,13 +128,24 @@ jobs:
         # merging or deploying changes.
         continue-on-error: true
         run: |
-          npm run test:intl-translations || echo "Error: ${?}" > ./failed
+          npm run test:intl-translations > output.txt \
+            || echo "Error: ${?}" > ./failed
+
+          # Make sure you can see the output in the log!
+          cat output.txt
+
           if [ -f ./failed ]; then
-            echo "⚠️ Translations: English and Spanish are mismatched." >> $GITHUB_STEP_SUMMARY
-            echo ""  >> $GITHUB_STEP_SUMMARY
-            echo "See *tranlsations* job logs for details."  >> $GITHUB_STEP_SUMMARY
+            {
+              echo '⚠️ Translations: English and Spanish are mismatched.'
+              echo '<details><summary>Details:</summary>'
+              echo ''
+              cat output.txt
+              echo ''
+              echo '</details>'
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 1
           else
-            echo "✅ Translations: In good shape." >> $GITHUB_STEP_SUMMARY
+            echo '✅ Translations: In good shape.' >> "${GITHUB_STEP_SUMMARY}"
           fi
 
 
