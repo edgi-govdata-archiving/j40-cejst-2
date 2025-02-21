@@ -4,11 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/deploy_frontend_main.yml"
+      - ".github/workflows/build-client.yml"
       - "client/**/*"
   pull_request:
     paths:
-      - ".github/workflows/deploy_frontend_main.yml"
+      - ".github/workflows/build-client.yml"
       - "client/**/*"
 
 concurrency:
@@ -106,6 +106,9 @@ jobs:
     defaults:
       run:
         working-directory: client
+    permissions:
+      contents: write       # For commiting changes back to the current PR.
+      pull-requests: write  # For commenting on the PR.
     steps:
       - uses: actions/checkout@v4
 
@@ -117,8 +120,59 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Spanish translation test
-        run: npm run test:intl-translations
+      - name: Extract English from source code
+        if: github.event_name == 'pull_request'
+        run: npm run intl:extract
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        id: commit-strings
+        if: github.event_name == 'pull_request'
+        with:
+          commit_message: 'Auto-update en.json from component source code'
+          file_pattern: 'client/src/intl/en.json'
+
+      - uses: thollander/actions-comment-pull-request@v3
+        if: steps.commit-strings.outputs.changes_detected == 'true'
+        with:
+          message: >
+            :wave: FYI, your PR has been automatically updated with changes to
+            `client/src/intl/en.json`, which contains all the translatable text
+            from the application (probably because you made changes to
+            the text of a component without updating this file).
+
+      - name: Check Spanish translations
+        # TODO: Make this error fatal when we have a strategy for translations!
+        # 
+        # Right now, we are trying to quickly iterate on this community
+        # deployment of CEJST and don't have a clear process or strategy around
+        # how to handle translations. We're keeping this check in so we have an
+        # eye on what is or isn't translated, but missing or deprecated
+        # non-English strings should not stop the build and prevent us from
+        # merging or deploying changes.
+        continue-on-error: true
+        run: |
+          npm run test:intl-translations > output.txt \
+            || echo "Error: ${?}" > ./failed
+
+          # Make sure you can see the output in the log!
+          cat output.txt
+
+          if [ -f ./failed ]; then
+            {
+              echo '⚠️ English and Spanish translations are mismatched.'
+              echo '<details><summary>Details:</summary>'
+              echo ''
+              echo '```'
+              cat output.txt
+              echo '```'
+              echo ''
+              echo '</details>'
+            } >> "${GITHUB_STEP_SUMMARY}"
+            exit 1
+          else
+            echo '✅ Translations in good shape.' >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
 
   deploy:
     if: github.ref == 'refs/heads/main'
