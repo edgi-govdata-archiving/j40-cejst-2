@@ -106,6 +106,8 @@ jobs:
     defaults:
       run:
         working-directory: client
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -116,6 +118,30 @@ jobs:
 
       - name: Install
         run: npm ci
+
+      - name: Extract English from source code
+        id: extract
+        if: github.event_name == 'pull_request'
+        run: |
+          ENGLISH_FILE='src/intl/en.json'
+          npm run intl:extract
+          if (git diff --exit-code "${ENGLISH_FILE}" > /dev/null); then
+            echo 'english-changed=' >> "${GITHUB_OUTPUT}"
+          else
+            echo 'english-changed=true' >> "${GITHUB_OUTPUT}"
+            git add "${ENGLISH_FILE}"
+            git commit -m 'Auto-update en.json from component source code'
+            git push
+          fi
+
+      - if: github.event_name == 'pull_request' && steps.extract.outputs.english-changed == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          message: |
+            :wave: FYI, your PR has been automatically updated with changes to
+            `client/src/intl/en.json`, which contains all the translatable text
+            from the application (probably because you made changes to
+            the text of a component without updating this file).
 
       - name: Check Spanish translations
         # TODO: Make this error fatal when we have a strategy for translations!
