@@ -120,25 +120,18 @@ jobs:
         run: npm ci
 
       - name: Extract English from source code
-        id: extract
         if: github.event_name == 'pull_request'
-        run: |
-          git config user.email "commit-bot@i-am-a-bot.com"
-          git config user.name "Translation Update Bot"
+        run: npm run intl:extract
 
-          ENGLISH_FILE='src/intl/en.json'
-          npm run intl:extract
-          if (git diff --exit-code "${ENGLISH_FILE}" > /dev/null); then
-            echo 'english-changed=' >> "${GITHUB_OUTPUT}"
-          else
-            echo 'english-changed=true' >> "${GITHUB_OUTPUT}"
-            git add "${ENGLISH_FILE}"
-            git commit -m 'Auto-update en.json from component source code'
-            git push
-          fi
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        id: commit-strings
+        if: github.event_name == 'pull_request'
+        with:
+          commit_message: 'Auto-update en.json from component source code'
+          file_pattern: 'client/src/intl/en.json'
 
-      - if: github.event_name == 'pull_request' && steps.extract.outputs.english-changed == 'true'
-        uses: thollander/actions-comment-pull-request@v3
+      - uses: thollander/actions-comment-pull-request@v3
+        if: steps.commit-strings.outputs.changes_detected == 'true'
         with:
           message: |
             :wave: FYI, your PR has been automatically updated with changes to
