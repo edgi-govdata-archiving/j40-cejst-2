@@ -117,7 +117,7 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Spanish translation test
+      - name: Check Spanish translations
         # TODO: Make this error fatal when we have a strategy for translations!
         # 
         # Right now, we are trying to quickly iterate on this community
@@ -128,13 +128,13 @@ jobs:
         # merging or deploying changes.
         continue-on-error: true
         run: |
-          npm run test:intl-translations
-          if [ "${?}" -eq 0 ]; then
-            echo "✅ Translations: In good shape." >> $GITHUB_STEP_SUMMARY
-          else
+          npm run test:intl-translations || echo "Error: ${?}" > ./failed
+          if [ -f ./failed ]; then
             echo "⚠️ Translations: English and Spanish are mismatched." >> $GITHUB_STEP_SUMMARY
             echo ""  >> $GITHUB_STEP_SUMMARY
             echo "See *tranlsations* job logs for details."  >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Translations: In good shape." >> $GITHUB_STEP_SUMMARY
           fi
 
 
