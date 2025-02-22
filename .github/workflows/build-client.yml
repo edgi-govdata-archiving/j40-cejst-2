@@ -67,6 +67,8 @@ jobs:
       pull-requests: write  # For commenting on the PR.
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.translations.outputs.commit_hash }}
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -156,6 +158,9 @@ jobs:
     permissions:
       contents: write       # For commiting changes back to the current PR.
       pull-requests: write  # For commenting on the PR.
+    outputs:
+      changed: ${{ steps.commit-strings.outputs.changes_detected == 'true' }}
+      commit_hash: ${{ steps.commit-strings.outputs.commit_hash }}
     steps:
       - uses: actions/checkout@v4
 
