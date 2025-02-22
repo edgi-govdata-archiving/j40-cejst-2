@@ -93,9 +93,16 @@ jobs:
         env:
           update_snapshots: ${{ github.event_name == 'pull_request' && steps.changes.outputs.english == 'true' }}
         run: |
+          echo "HEAD: '$(git rev-parse HEAD)'"
+          echo 'CHECKOUT_REF: "${{ needs.translations.outputs.commit_hash }}"'
+          echo "UPDATE_SNAPSHOTS: '${update_snapshots}'"
+          echo '-------------------------------'
+
           if [ "${update_snapshots}" == 'true' ]; then
+            echo 'UPDATING SNAPSHOTS'
             npm run test:update
           else
+            echo 'NOT UPDATING SNAPSHOTS'
             npm test
           fi
 
