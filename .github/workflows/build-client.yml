@@ -17,6 +17,7 @@ concurrency:
 
 env:
   node-version: 18
+  english-strings: client/src/intl/en.json
 
 jobs:
   build:
@@ -88,7 +89,7 @@ jobs:
         with:
           filters: |
             english:
-              - client/src/intl/en.json
+              - ${{ env.english-strings }}
 
       - name: Unit tests
         env:
@@ -121,6 +122,9 @@ jobs:
             because you changed some text in the app! **Make sure [the changes
             to `.snap` files](${{ env.commit_url }}) are correct** and don’t
             include other things that should *not* have changed.
+
+            You can also update snapshot tests yourself when working locally by
+            running `npm run test:update` on the command line.
 
   lint:
     runs-on: ubuntu-latest
@@ -187,7 +191,7 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           commit_message: 'Auto-update en.json from component source code'
-          file_pattern: 'client/src/intl/en.json'
+          file_pattern: '${{ env.english-strings }}'
 
       - name: Comment on the PR about changes
         uses: thollander/actions-comment-pull-request@v3
@@ -195,8 +199,8 @@ jobs:
         with:
           message: >
             :wave: FYI, your PR has been automatically updated with changes to
-            `client/src/intl/en.json`, which contains all the translatable text
-            from the application (probably because you made changes to
+            `${{ env.english-strings }}`, which contains all the translatable
+            text from the application (probably because you made changes to
             the text of a component without updating this file).
 
       - name: Check Spanish translations
