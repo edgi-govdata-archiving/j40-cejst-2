@@ -87,7 +87,7 @@ jobs:
         with:
           filters: |
             english:
-              - client/src/i18n/en.json
+              - client/src/intl/en.json
 
       - name: Unit tests
         env:
