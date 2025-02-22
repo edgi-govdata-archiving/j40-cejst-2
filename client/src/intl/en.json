@@ -88,7 +88,7 @@
     "description": "Alert body that appears at the top of pages."
   },
   "common.pages.alerts.banner.update.content.small": {
-    "defaultMessage": "<bold>This is an unofficial copy of the CEJST Tool!!!!</bold> We are working on an overhaul, but in the meantime some links and text may incorrectly suggest that this site is affiliated with the US Government.",
+    "defaultMessage": "<bold>This is an unofficial copy of the CEJST Tool.</bold> We are working on an overhaul, but in the meantime some links and text may incorrectly suggest that this site is affiliated with the US Government.",
     "description": "Alert body that appears at the top of pages."
   },
   "common.pages.alerts.banner.update.heading.large": {
